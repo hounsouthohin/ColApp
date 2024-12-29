@@ -1,0 +1,117 @@
+﻿@page "/Connexion"
+@inject IJSRuntime JS
+@using ColApp.Data
+@using ColApp.Models
+@using ColApp.Partials
+@using ColApp.Authentication    
+@using ColApp.Services
+@using Microsoft.Data.SqlClient
+@using Microsoft.EntityFrameworkCore
+@using System.Data.SqlClient
+@inject UserAccountService userAccountService
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+@inject ServiceConnexion servConnexion
+
+
+<EditForm Model = "@user" OnValidSubmit="SoumettreAsync" FormName="connexion">
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-sm-6 col-md-4">
+
+                        <!-- Formulaire de Connexion -->
+                        <div class="card shadow-lg rounded p-4">
+                            <h2 class="text-center text-primary mb-4">Connexion</h2>
+                
+                            <!-- Email input -->
+                            <div class="form-outline mb-4">
+                                <label for="email" class="form-label">Courriel</label>
+                                <InputText type="email" id="email" class="form-control form-control-lg" @bind-Value="user.Courriel" placeholder="Entrez votre courriel" required />
+                            </div>
+
+                            <!-- Mot de passe input -->
+                            <div class="form-outline mb-4">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <InputText type="password" id="password" class="form-control form-control-lg" @bind-Value="user.MotDePasse" placeholder="Entrez votre mot de passe" required />
+                            </div>
+
+                            <!-- Row for checkbox and link -->
+                            <div class="row mb-4">
+                                <div class="col d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
+                                        <label class="form-check-label" for="form1Example3">Se souvenir de moi</label>
+                                    </div>
+                                </div>
+                                <div class="col text-end">
+                                    <a href="#!" class="text-muted">Mot de passe oublié ?</a>
+                                </div>
+                            </div>
+
+                            <!-- Submit button -->
+                            <div class="d-grid">
+                                <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                            </div>
+
+                            <!-- Divider -->
+                            <hr class="my-4" />
+
+                            <!-- Register link -->
+                            <p class="text-center text-muted mb-0">Pas encore de compte ? <a href="Inscription" class="text-primary">S'inscrire</a></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+</EditForm>
+
+
+
+@code{
+
+    private User? user = new User();
+    int  no;
+    public bool isAuthenticated;
+
+    public async Task SoumettreAsync()
+    {
+
+        no = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
+        if (no ==-1) { await JS.InvokeVoidAsync("alert", "Connexion échouee");
+            return;  
+        }
+        var userAccount = userAccountService.GetByUserMail(user.Courriel);
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;    
+        await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+            {
+                Courriel = userAccount.Courriel,
+                Role = userAccount.Role,
+                Prenom = userAccount.Prenom
+                //Sauvegarde des informations de l'utilisateur en cas de connection reussie
+            });
+        navManager.NavigateTo("/", true);
+    }
+    /*public async Task RetournerTentatives()
+    {
+    }*/
+    public async Task  Redirection()
+    {
+
+        var custom = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await custom.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity.IsAuthenticated;
+        if (isAuthenticated)
+        {
+            navManager.NavigateTo("/", true);
+        }
+    }
+    protected override async Task OnInitializedAsync() 
+    {
+        user ??= new();
+        await Redirection();
+        //Si il y a deja une connexion rediriger ves la page home
+    }
+   
+}
+

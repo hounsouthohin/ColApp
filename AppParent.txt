@@ -1,0 +1,103 @@
+Site pour la documentation de blazor:
+https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/blazor/project-structure.md 
+
+
+
+
+Projet principal
+
+IDEE PRINCIPALE : 
+	une application affiche le lycée auquel tu est assigne en fonction
+	de ton numéro identifiant ou NO PV
+
+IDEE SECONDAIRE :
+
+	DES INFORMATIONS A LA DISPONIBILITE DES UTILISATEURS  :
+								      La DATE de la RENTRE scolaire de l'établissement 
+								      la LOCALISATION de l'établissement
+								      La CLASSE dans lequel on est affecte
+								      DELAI pour l'INSCRIPTION
+								      Le SOLDE de l'étudiant
+								      Le CONTACT de l'établissement pour prendre plus d'informations auprès des services adaptes
+								      L'HORAIRE de l'étudient 
+								      La LISTE DES COURS avec le NOM des PROFESSEURS DE l'étudient 
+
+									     
+	ACTIONS A ENVISAGER POUR LES UTILISATEURS :
+						  PRISE DE RENDEZ-VOUS PAR L'ETUDIENT 
+					          Les ADMINISTRATEURS  ou PROVISEURS  peuvent CHANGER UNE ADMINISTRATION
+	
+	FONCTIONNALITES A DEVELLOPER NECESSAIREMENT: 
+				      	           ENVOIE de NOTIFICATIONS au ELEVES
+					           Prévoir des PARAMETRES pour CHANGER DE MOT DE PASSE , CHANGER de COURRIEL, CHANGER de PHOTO DE PROFILE
+						   AGENDA SCOLAIRE
+
+	FONCTIONNALITES SUPPLEMENTAIRES :
+					
+					RECEPTION des notes et bulletins scolaires par les professeurs dans l'application
+					Paiement de la scolarité par carte bancaire
+					Prévoir un HISTORIQUE pour les TRANSACTIONS BANCAIRES
+					DEMANDE DE MODIFICATION DE  l'ADMINISTRATION a un établissement 
+					ETABLIR UN DELAI POUR LA MODIFICATION
+					
+					
+BASE DE DONNEES :
+	TABLES :
+		Utilisateur
+		Etablissement
+		Classe
+		
+
+PAGES: 
+	ACCUEIL
+		
+		
+	Horaire
+		Liste des cours
+		Programme
+
+	Courriels
+		Liste des messages
+		Supprimer message
+		Nouveau message
+		GROUPE
+		RECHERCHE
+
+	Cours
+		Liste des cours :
+				Cliquer sur chaque Cours pour avoir acces a ses informations
+	
+	Rendez-Vous
+
+	Paramètres
+		ChangerMDP
+		ChangerPP
+		ChangerCourriel
+
+	Agenda : Un calendrier avec les evenements de l'etablissement
+
+	
+	
+
+
+
+
+
+scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve -Force
+
+
+
+$cert = New-SelfSignedCertificate `
+    -DnsName "LAPTOP-EPSLT7GU\MSSQLSERVER01" `
+    -CertStoreLocation "Cert:\LocalMachine\My" `
+    -FriendlyName "SQLServerSSL"
+
+Write-Host "Certificat créé : $($cert.Thumbprint)"
+
+Export-PfxCertificate -Cert "Cert:\LocalMachine\My\$($cert.Thumbprint)" `
+    -FilePath "C:\Users\HP PAVILION\Desktop\portfolio\RedirectionApp\Redirection\SQLServerSSL.pfx" `
+    -Password (ConvertTo-SecureString -String "YourPassword" -Force -AsPlainText)
+
+Export-Certificate -Cert "Cert:\LocalMachine\My\$($cert.Thumbprint)" -FilePath "C:\Users\HP PAVILION\Desktop\portfolio\RedirectionApp\Redirection\SQLServerSSL.pfx"
+
+
