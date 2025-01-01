@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ColApp.Services;
 using ColApp.Authentication;
+using Syncfusion.Blazor;
 
 namespace ColApp
 {
@@ -30,9 +31,11 @@ namespace ColApp
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<ServiceConnexion>();
+            builder.Services.AddScoped<ServiceInscription>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // Enregistrement du provider d'authentification
             builder.Services.AddSingleton<UserAccountService>();
+         
 
             var app = builder.Build();
 

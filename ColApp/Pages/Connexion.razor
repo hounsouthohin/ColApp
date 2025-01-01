@@ -78,7 +78,7 @@
     {
 
         no = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
-        if (no ==-1) { await JS.InvokeVoidAsync("alert", "Connexion échouee");
+        if (no == -1) { await JS.InvokeVoidAsync("alert", "Connexion échouee");
             return;  
         }
         var userAccount = userAccountService.GetByUserMail(user.Courriel);

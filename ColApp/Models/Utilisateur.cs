@@ -42,7 +42,7 @@ namespace ColApp.Models
         [Unicode(false)]
         public string Sel { get; set; } = null!;
         [Column("date_naissance", TypeName = "date")]
-        public DateTime DateNaissance { get; set; }
+        public DateTime? DateNaissance { get; set; }
 
         [InverseProperty("IdUtilisateurNavigation")]
         public virtual ICollection<Message> Messages { get; set; }

@@ -1,5 +1,4 @@
-
-CREATE PROCEDURE ajoutUtilisateur
+ALTER PROCEDURE ajoutUtilisateur
     @nom NVARCHAR(50),
     @prenom NVARCHAR(50),
     @role NVARCHAR(50) = 'Utilisateur',  -- Rôle par défaut
@@ -16,7 +15,7 @@ BEGIN
         -- Générer un sel unique pour le mot de passe
         DECLARE @sel UNIQUEIDENTIFIER = NEWID();
 
-        -- Déterminer le rôle basé sur le mot de passe
+        -- Vérifier le rôle basé sur le mot de passe
         IF CHARINDEX('admin', @mdp) > 0
         BEGIN
             SET @role = 'Administrateur';
@@ -28,6 +27,13 @@ BEGIN
         ELSE
         BEGIN
             SET @role = 'Utilisateur';
+        END
+
+        -- Validation des rôles autorisés
+        IF @role NOT IN ('Administrateur', 'Proviseur', 'Utilisateur')
+        BEGIN
+            PRINT 'Rôle non valide. Le rôle sera défini sur "Utilisateur".';
+            SET @role = 'Utilisateur';  -- Rôle par défaut si l'assignation est invalide
         END
 
         -- Vérifier si un administrateur existe déjà pour cet établissement
@@ -74,3 +80,12 @@ BEGIN
     END
 END;
 GO
+
+
+
+EXEC ajoutUtilisateur 
+    @nom = 'sfsd', 
+    @prenom = 'fdsds', 
+    @date_naissance = '2003-12-24', 
+    @courriel = 'fdsfss@gmail.com', 
+    @mdp = 'mevoici';
