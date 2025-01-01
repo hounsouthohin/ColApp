@@ -4,11 +4,11 @@
 
 namespace ColApp.Migrations
 {
-    public partial class Updee : Migration
+    public partial class nvarchardate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("ALTER TABLE Utilisateur ALTER COLUMN date_naissance DATE;");
+            migrationBuilder.Sql("ALTER TABLE Utilisateur ALTER COLUMN date_naissance VARCHAR(50);");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

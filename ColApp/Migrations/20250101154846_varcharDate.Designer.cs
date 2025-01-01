@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ColApp.Migrations
 {
     [DbContext(typeof(BDEtabContext))]
-    [Migration("20250101035752_Updee")]
-    partial class Updee
+    [Migration("20250101154846_varcharDate")]
+    partial class varcharDate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

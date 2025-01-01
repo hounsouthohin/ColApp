@@ -16,13 +16,13 @@ namespace ColApp.Services
         public DateTime Date_naissance { get; set; }   
         private IDbContextFactory<BDEtabContext> _BDEtabContext { get; set; }
 
-        public ServiceInscription(IDbContextFactory<BDEtabContext> BlaBlatonContext)
+        public ServiceInscription(IDbContextFactory<BDEtabContext> BDEtabContext)
         {
             Nom = "";
             Prenom = "";
             Courriel = "";
             MDP = "";
-            _BDEtabContext = BlaBlatonContext;
+            _BDEtabContext = BDEtabContext;
         }
 
         public bool VerifierCourriel(string email)
@@ -41,25 +41,26 @@ namespace ColApp.Services
         }
 
 
+
         public async Task InsererNouveauCompte(string nom, string prenom, DateTime date_naissance, string email, string MDP)
         {
             var dbContext = await _BDEtabContext.CreateDbContextAsync();
 
-            // Vous pouvez également vous assurer que la date est convertie sans l'heure
-            DateTime dateSansHeure = date_naissance.Date;
+            // Convertir la date en chaîne au format dd/MM/yyyy
+            string dateFormattee = date_naissance.ToString("dd/MM/yyyy");
 
             // Déclaration des paramètres avec SqlParameter
             var param1 = new SqlParameter("@nom", SqlDbType.NVarChar) { Value = nom };
             var param2 = new SqlParameter("@prenom", SqlDbType.NVarChar) { Value = prenom };
-            var param3 = new SqlParameter("@date_naissance", SqlDbType.Date) { Value = dateSansHeure };  // Utilisez SqlDbType.Date ici
+            var param3 = new SqlParameter("@date_naissance", SqlDbType.NVarChar) { Value = dateFormattee };  // Utiliser NVARCHAR ici
             var param4 = new SqlParameter("@courriel", SqlDbType.NVarChar) { Value = email };
             var param5 = new SqlParameter("@mdp", SqlDbType.NVarChar) { Value = MDP };
             var param6 = new SqlParameter("@role", SqlDbType.NVarChar) { Value = "Utilisateur" };  // Rôle par défaut
 
             // Exécution de la procédure stockée avec les paramètres
             await dbContext.Database.ExecuteSqlRawAsync(
-                "EXEC ajoutUtilisateur @nom, @prenom, @role, @date_naissance, @courriel, @mdp",
-                param1, param2, param6, param3, param4, param5);
+                "EXEC ajoutUtilisateur @nom, @prenom,@role,@courriel,@date_naissance,@mdp",
+                param1, param2, param6, param4, param3, param5);
         }
 
 

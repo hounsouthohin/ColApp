@@ -3,7 +3,7 @@ ALTER PROCEDURE ajoutUtilisateur
     @prenom NVARCHAR(50),
     @role NVARCHAR(50) = 'Utilisateur',  -- Rôle par défaut
     @courriel NVARCHAR(100),
-    @date_naissance DATE,
+    @date_naissance NVARCHAR(50),
     @mdp NVARCHAR(100)
 AS
 BEGIN

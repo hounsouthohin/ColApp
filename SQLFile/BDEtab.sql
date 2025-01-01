@@ -25,7 +25,7 @@ CREATE TABLE Utilisateur (
     courriel VARCHAR(100)   NOT NULL, 
     motDePasse VARCHAR(100) NOT NULL,
     sel VARCHAR(100)  NOT NULL,
-    date_naissance DATE NOT NULL,
+    date_naissance VARCHAR NOT NULL,
 );
 
 CREATE TABLE Classe (

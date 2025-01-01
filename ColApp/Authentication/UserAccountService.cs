@@ -13,13 +13,13 @@ namespace ColApp.Services
         {
             _factory = factory;
         }
-        public Utilisateur? GetByUserMail(string courriel)
+        public Utilisateur? GetByUserMail(string courriel)  
         {
-            var dbContext = _factory.CreateDbContext();
+            var dbContext = _factory.CreateDbContext(); 
             var user = dbContext.Utilisateurs
-                        .Where(x => x.Courriel == courriel)
-                        .FirstOrDefault();
-            return user;
+                        .Where(x => x.Courriel == courriel)  
+                        .FirstOrDefault();              
+            return user;   
 
         }
     }
