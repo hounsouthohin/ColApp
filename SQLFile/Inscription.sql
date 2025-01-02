@@ -87,5 +87,5 @@ EXEC ajoutUtilisateur
     @nom = 'sfsd', 
     @prenom = 'fdsds', 
     @date_naissance = '2003-12-24', 
-    @courriel = 'fdsfss@gmail.com', 
+    @courriel = 'orhelbambara@gmail.com', 
     @mdp = 'mevoici';

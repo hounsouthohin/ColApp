@@ -7,7 +7,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ColApp.Services;
 using ColApp.Authentication;
-using Syncfusion.Blazor;
+using ColApp.Interfaces;
+using ColApp.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace ColApp
 {
@@ -22,6 +24,9 @@ namespace ColApp
     new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
             conStrBuilder.Password = builder.Configuration["MDP"];
 
+            // Charger le fichier appsettings.json
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
             builder.Services.AddPooledDbContextFactory<BDEtabContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
 
@@ -35,7 +40,14 @@ namespace ColApp
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // Enregistrement du provider d'authentification
             builder.Services.AddSingleton<UserAccountService>();
-         
+
+            builder.Services.AddSingleton<IEmailSender>(provider =>
+                    new EmailSender("smtp.example.com", 587, "from@example.com", "password"));
+            builder.Services.AddSingleton<ITokenService, TokenService>();
+            
+            builder.Services.AddSingleton<PasswordResetService>();
+
+
 
             var app = builder.Build();
 

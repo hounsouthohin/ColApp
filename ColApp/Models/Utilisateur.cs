@@ -45,6 +45,11 @@ namespace ColApp.Models
         [StringLength(50)]
         [Unicode(false)]
         public string? DateNaissance { get; set; }
+        [StringLength(100)]
+        [Unicode(false)]
+        public string? PasswordResetToken { get; set; }
+        [Column(TypeName = "datetime")]
+        public DateTime? ResetTokenExpires { get; set; }
 
         [InverseProperty("IdUtilisateurNavigation")]
         public virtual ICollection<Message> Messages { get; set; }

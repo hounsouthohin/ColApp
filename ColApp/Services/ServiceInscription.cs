@@ -4,6 +4,7 @@ using ColApp.Data;
 using ColApp.Models;
 using System.Data;
 using System.Globalization;
+using System.Security.Cryptography;
 
 namespace ColApp.Services
 {
@@ -64,7 +65,10 @@ namespace ColApp.Services
         }
 
 
-
+        public string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64)); 
+        }
 
 
     }

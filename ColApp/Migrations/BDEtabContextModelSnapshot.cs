@@ -329,8 +329,10 @@ namespace ColApp.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("courriel");
 
-                    b.Property<DateTime?>("DateNaissance")
-                        .HasColumnType("date")
+                    b.Property<string>("DateNaissance")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("date_naissance");
 
                     b.Property<string>("MotDePasse")
