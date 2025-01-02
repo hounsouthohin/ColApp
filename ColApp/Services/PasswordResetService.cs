@@ -13,14 +13,14 @@ namespace ColApp.Services
             _emailSender = emailSender;
             _userAccountService = userAccountService;
             _tokenService = tokenService;
-            _configuration = configuration;
+            _configuration = configuration;          
         }
 
         // Méthode pour envoyer un lien de réinitialisation à l'email de l'utilisateur
         public async Task SendPasswordResetLinkAsync(string email)
         {
             // Vérifier si l'utilisateur existe dans la base de données
-            var user = _userAccountService.GetByUserMail(email);
+            var user = await _userAccountService.GetByUserMail(email);
             if (user != null)
             {
                 // Générer un token sécurisé pour la réinitialisation du mot de passe

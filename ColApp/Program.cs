@@ -19,13 +19,13 @@ namespace ColApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var conStrBuilder =
-
-    new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+            var conStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
             conStrBuilder.Password = builder.Configuration["MDP"];
 
-            // Charger le fichier appsettings.json
+            // Ajouter la configuration de l'application
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            var baseUrl = builder.Configuration["AppSettings:BaseUrl"];  
 
             builder.Services.AddPooledDbContextFactory<BDEtabContext>(
                 x => x.UseSqlServer(conStrBuilder.ConnectionString));
@@ -40,9 +40,10 @@ namespace ColApp
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // Enregistrement du provider d'authentification
             builder.Services.AddSingleton<UserAccountService>();
+           
 
-            builder.Services.AddSingleton<IEmailSender>(provider =>
-                    new EmailSender("smtp.example.com", 587, "from@example.com", "password"));
+            // Enregistrer EmailSender dans l'injection de dépendances
+            builder.Services.AddSingleton<IEmailSender, EmailSender>();
             builder.Services.AddSingleton<ITokenService, TokenService>();
             
             builder.Services.AddSingleton<PasswordResetService>();

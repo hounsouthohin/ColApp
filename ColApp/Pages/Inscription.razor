@@ -91,7 +91,7 @@
             //Inscription
             await ServiceInscription.InsererNouveauCompte(ServiceInscription.Nom, ServiceInscription.Prenom,ServiceInscription.Date_naissance, ServiceInscription.Courriel, ServiceInscription.MDP);
             //Connexion
-            var user = UserAccountService.GetByUserMail(ServiceInscription.Courriel);
+            var user = await UserAccountService.GetByUserMail(ServiceInscription.Courriel);
             var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
             await customAuthStateProvider.UpdateAuthenticationState(new UserSession
                 {

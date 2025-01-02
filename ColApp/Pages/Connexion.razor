@@ -81,7 +81,7 @@
         if (no == -1) { await JS.InvokeVoidAsync("alert", "Connexion échouee");
             return;  
         }
-        var userAccount = userAccountService.GetByUserMail(user.Courriel);
+        var userAccount = await userAccountService.GetByUserMail(user.Courriel);
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;    
         await customAuthStateProvider.UpdateAuthenticationState(new UserSession
             {

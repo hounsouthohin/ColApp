@@ -17,9 +17,9 @@ namespace ColApp.Services
         {
             _factory = factory;
         }
-        public Utilisateur? GetByUserMail(string courriel)
+        public async Task<Utilisateur>? GetByUserMail(string courriel)
         {
-            var dbContext = _factory.CreateDbContext();
+            var dbContext = await _factory.CreateDbContextAsync();
             var user = dbContext.Utilisateurs
                         .Where(x => x.Courriel == courriel)
                         .FirstOrDefault();
@@ -35,7 +35,7 @@ namespace ColApp.Services
             return user;
         }
 
-        public async Task SaveTokenAsync(string token, string mail)
+        public async Task SaveTokenAsync(string token, string mail,DateTime expirationTime)
         {
             // Créez un contexte de base de données à partir du DbContextFactory
             var dbContext = await _factory.CreateDbContextAsync();
@@ -49,7 +49,7 @@ namespace ColApp.Services
             {
                 // Affectez le token de réinitialisation et sa date d'expiration
                 user.PasswordResetToken = token;
-                user.ResetTokenExpires = DateTime.UtcNow.AddHours(1); // Vous pouvez définir une expiration spécifique, par exemple 1 heure
+                user.ResetTokenExpires = expirationTime;
 
                 // Mettez à jour l'utilisateur dans la base de données
                 dbContext.Utilisateurs.Update(user); // Mettre à jour l'entité si nécessaire
@@ -68,7 +68,7 @@ namespace ColApp.Services
         public async Task UpdateUserAsync(Utilisateur utilisateur)
         {
             var dbContext = await _factory.CreateDbContextAsync();
-            var user = GetByUserMail(utilisateur.Courriel);
+            var user = await GetByUserMail(utilisateur.Courriel);
             if (user != null)
             {
                 // Mettre à jour les propriétés nécessaires de l'utilisateur

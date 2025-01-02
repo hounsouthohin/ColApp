@@ -8,21 +8,29 @@ namespace ColApp.Interfaces
         Task SendEmailAsync(string to, string subject, string body);
     }
 
+  
     public class EmailSender : IEmailSender
     {
-
-        // Recherche : SmtpClient
         private readonly SmtpClient _smtpClient;
         private readonly string _fromEmail;
 
-        public EmailSender(string smtpServer, int smtpPort, string fromEmail, string smtpPassword)
+        public EmailSender(IConfiguration configuration)
         {
+            // Récupérer les informations SMTP à partir du fichier de configuration (par exemple appsettings.json)
+            var smtpServer = configuration["Ethereal:SmtpServer"];
+            var smtpPort = int.Parse(configuration["Ethereal:SmtpPort"]);
+            var fromEmail = configuration["Ethereal:FromEmail"];
+            var smtpPassword = configuration["Ethereal:SmtpPassword"];
+
+
+
             _smtpClient = new SmtpClient(smtpServer)
             {
                 Port = smtpPort,
                 Credentials = new NetworkCredential(fromEmail, smtpPassword),
                 EnableSsl = true,
             };
+
             _fromEmail = fromEmail;
         }
 
@@ -39,6 +47,9 @@ namespace ColApp.Interfaces
                 Console.WriteLine($"Erreur lors de l'envoi de l'email: {ex.Message}");
             }
         }
-
     }
+
 }
+
+
+

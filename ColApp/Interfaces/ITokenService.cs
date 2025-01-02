@@ -30,7 +30,7 @@ namespace ColApp.Interfaces
             _tokenStore[token] = (user.Courriel, expirationTime);
 
             //inserer le token dans la base de donnee
-            _userAccountService.SaveTokenAsync(token,user.Courriel);
+            _userAccountService.SaveTokenAsync(token,user.Courriel,expirationTime);
 
             return token;
         }
@@ -41,7 +41,7 @@ namespace ColApp.Interfaces
             {
                 var tokenData = _tokenStore[token];
                 // Vérifier si le token correspond à l'email et n'est pas expiré
-                if (tokenData.Email == user.Courriel && tokenData.Expiration > user.ResetTokenExpires)
+                if (tokenData.Email == user.Courriel && tokenData.Expiration >= user.ResetTokenExpires)
                 {
                     return true;
                 }
