@@ -67,16 +67,31 @@ namespace ColApp.Services
 
         public async Task UpdateUserAsync(Utilisateur utilisateur)
         {
-            var dbContext = await _factory.CreateDbContextAsync();
+            var dbContext = await _factory.CreateDbContextAsync(); 
             var user = await GetByUserMail(utilisateur.Courriel);
+
             if (user != null)
             {
-                // Mettre à jour les propriétés nécessaires de l'utilisateur
-                user.MotDePasse = utilisateur.MotDePasse; // Mettre à jour le mot de passe
-                user.ResetTokenExpires = utilisateur.ResetTokenExpires;
-                user.PasswordResetToken = utilisateur.PasswordResetToken;
-                // Sauvegarder les changements dans la base de données
-                await dbContext.SaveChangesAsync();
+                try
+                {
+                    if (dbContext.Entry(user).State == EntityState.Detached)
+                    {
+                        dbContext.Attach(user);
+                    }
+
+                    user.MotDePasse = utilisateur.MotDePasse;
+                    user.ResetTokenExpires = utilisateur.ResetTokenExpires;
+                    user.PasswordResetToken = utilisateur.PasswordResetToken;
+
+                    dbContext.Entry(user).State = EntityState.Modified;
+
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log ou afficher l'erreur
+                    Console.WriteLine($"Erreur lors de la mise à jour de l'utilisateur : {ex.Message}");
+                }
             }
             else
             {

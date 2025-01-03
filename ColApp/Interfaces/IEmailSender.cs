@@ -38,7 +38,10 @@ namespace ColApp.Interfaces
         {
             try
             {
-                var mailMessage = new MailMessage(_fromEmail, to, subject, body);
+                var mailMessage = new MailMessage(_fromEmail, to, subject, body)
+                {
+                    IsBodyHtml = true  // Indiquer que le corps de l'email est en HTML
+                };
                 await _smtpClient.SendMailAsync(mailMessage);
             }
             catch (Exception ex)

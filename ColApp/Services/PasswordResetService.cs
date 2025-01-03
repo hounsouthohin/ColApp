@@ -28,11 +28,20 @@ namespace ColApp.Services
 
                 // Créer un lien de réinitialisation avec ce token
                 var baseUrl = _configuration["AppSettings:BaseUrl"];
-                var resetLink = $"https://localhost:7204/reset-password?token={token}&email={email}";
+                var resetLink = $"{baseUrl}/reset-password?token={token}&email={email}";
+                // Le corps du message
+                var emailBody = $@"
+            <html>
+                <body>
+                    <p>Cliquez sur ce lien pour réinitialiser votre mot de passe :</p>
+                    <a href='{resetLink}'>Réinitialiser le mot de passe</a>
+                </body>
+            </html>";
 
+                // Envoyer l'email avec le lien cliquable en tant que contenu HTML
+                await _emailSender.SendEmailAsync(email, "Réinitialisation de mot de passe", emailBody);
 
-                // Envoyer l'email avec le lien
-                await _emailSender.SendEmailAsync(email, "Réinitialisation de mot de passe", $"Cliquez sur ce lien pour réinitialiser votre mot de passe : {resetLink}");
+                
             }
             else
             {
