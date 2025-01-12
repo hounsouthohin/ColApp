@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using ColApp.Services;
 using ColApp.Authentication;
 using ColApp.Interfaces;
-using ColApp.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace ColApp
@@ -40,7 +39,11 @@ namespace ColApp
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             builder.Services.AddScoped<CustomAuthenticationStateProvider>(); // Enregistrement du provider d'authentification
             builder.Services.AddSingleton<UserAccountService>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
            
+
+
+
 
             // Enregistrer EmailSender dans l'injection de dépendances
             builder.Services.AddSingleton<IEmailSender, EmailSender>();
@@ -51,6 +54,9 @@ namespace ColApp
 
 
             var app = builder.Build();
+
+
+          
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -68,6 +74,8 @@ namespace ColApp
 
             app.MapBlazorHub();
             app.MapFallbackToPage("/_Host");
+            
+
 
             app.Run();
         }

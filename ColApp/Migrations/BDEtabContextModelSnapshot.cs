@@ -313,6 +313,30 @@ namespace ColApp.Migrations
                     b.ToTable("PhotoUtilisateur", "db_accessadmin");
                 });
 
+            modelBuilder.Entity("ColApp.Models.SeSouvenirToken", b =>
+                {
+                    b.Property<DateTime>("DateExpiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<string>("UserEmail")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.ToTable("SeSouvenirTokens", "db_accessadmin");
+                });
+
             modelBuilder.Entity("ColApp.Models.Utilisateur", b =>
                 {
                     b.Property<int>("IdUtilisateur")
@@ -349,12 +373,20 @@ namespace ColApp.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("nom");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("Prenom")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("prenom");
+
+                    b.Property<DateTime?>("ResetTokenExpires")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Role")
                         .IsRequired()

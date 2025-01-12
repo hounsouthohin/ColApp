@@ -1,9 +1,34 @@
 ﻿@page "/"
-
+@inject AuthenticationStateProvider authStateProvider
+@using ColApp.Authentication
+@inject NavigationManager Navigation
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
-
+@if (isAuthenticated)
+{
+    <p>Hello your are connected! @name</p>
+}
+else if (!isAuthenticated)
+{
+    <p>Hello, your are not Connected! </p>
+}
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+
+    bool isAuthenticated = false;
+    string name = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var custom = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await custom.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity.IsAuthenticated;
+        name = authState.User.Identity.Name;
+    }
+}
+
+
+

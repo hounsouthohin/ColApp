@@ -21,8 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Container\" />
     <Folder Include="Components\" />
+    <Folder Include="Container\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>

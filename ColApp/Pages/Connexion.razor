@@ -3,7 +3,7 @@
 @using ColApp.Data
 @using ColApp.Models
 @using ColApp.Partials
-@using ColApp.Authentication    
+@using ColApp.Authentication
 @using ColApp.Services
 @using Microsoft.Data.SqlClient
 @using Microsoft.EntityFrameworkCore
@@ -14,104 +14,115 @@
 @inject ServiceConnexion servConnexion
 
 
-<EditForm Model = "@user" OnValidSubmit="SoumettreAsync" FormName="connexion">
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-sm-6 col-md-4">
+<EditForm Model="@user" OnValidSubmit="SoumettreAsync" FormName="connexion">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-6 col-md-4">
+                <!-- Formulaire de Connexion -->
+                <div class="card shadow-lg rounded p-4">
+                    <h2 class="text-center text-primary mb-4">Connexion</h2>
 
-                        <!-- Formulaire de Connexion -->
-                        <div class="card shadow-lg rounded p-4">
-                            <h2 class="text-center text-primary mb-4">Connexion</h2>
-                
-                            <!-- Email input -->
-                            <div class="form-outline mb-4">
-                                <label for="email" class="form-label">Courriel</label>
-                                <InputText type="email" id="email" class="form-control form-control-lg" @bind-Value="user.Courriel" placeholder="Entrez votre courriel" required />
-                            </div>
-
-                            <!-- Mot de passe input -->
-                            <div class="form-outline mb-4">
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <InputText type="password" id="password" class="form-control form-control-lg" @bind-Value="user.MotDePasse" placeholder="Entrez votre mot de passe" required />
-                            </div>
-
-                            <!-- Row for checkbox and link -->
-                            <div class="row mb-4">
-                                <div class="col d-flex align-items-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
-                                        <label class="form-check-label" for="form1Example3">Se souvenir de moi</label>
-                                    </div>
-                                </div>
-                                <div class="col text-end">
-                                    <a href="forgotPassword" class="text-muted">Mot de passe oublié ?</a>
-                                </div>
-                            </div>
-
-                            <!-- Submit button -->
-                            <div class="d-grid">
-                                <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-lg">Se connecter</button>
-                            </div>
-
-                            <!-- Divider -->
-                            <hr class="my-4" />
-
-                            <!-- Register link -->
-                            <p class="text-center text-muted mb-0">Pas encore de compte ? <a href="Inscription" class="text-primary">S'inscrire</a></p>
-                        </div>
-
+                    <!-- Email input -->
+                    <div class="form-outline mb-4">
+                        <label for="email" class="form-label">Courriel</label>
+                        <InputText type="email" id="email" class="form-control form-control-lg" @bind-Value="user.Courriel" placeholder="Entrez votre courriel" required />
                     </div>
+
+                    <!-- Mot de passe input -->
+                    <div class="form-outline mb-4">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <InputText type="password" id="password" class="form-control form-control-lg" @bind-Value="user.MotDePasse" placeholder="Entrez votre mot de passe" required />
+                    </div>
+
+                    <!-- Row for checkbox and link -->
+                    <div class="row mb-4">
+                        <div class="col d-flex align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" @bind="rememberMe" />
+                                <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                            </div>
+                        </div>
+                        <div class="col text-end">
+                            <a href="forgotPassword" class="text-muted">Mot de passe oublié ?</a>
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="d-grid">
+                        <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                    </div>
+
+                    <!-- Divider -->
+                    <hr class="my-4" />
+
+                    <!-- Register link -->
+                    <p class="text-center text-muted mb-0">Pas encore de compte ? <a href="Inscription" class="text-primary">S'inscrire</a></p>
                 </div>
             </div>
-
+        </div>
+    </div>
 </EditForm>
 
-
-
-@code{
-
+@code {
     private User? user = new User();
-    int  no;
+    int no;
     public bool isAuthenticated;
+    private bool rememberMe;
+
+
+
 
     public async Task SoumettreAsync()
     {
-
-        no = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
-        if (no == -1) { await JS.InvokeVoidAsync("alert", "Connexion échouee");
-            return;  
+        int no = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
+        if (no == -1)
+        {
+            await JS.InvokeVoidAsync("alert", "Connexion échouée");
+            return;
         }
+
         var userAccount = await userAccountService.GetByUserMail(user.Courriel);
-        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;    
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
         await customAuthStateProvider.UpdateAuthenticationState(new UserSession
             {
                 Courriel = userAccount.Courriel,
                 Role = userAccount.Role,
                 Prenom = userAccount.Prenom
-                //Sauvegarde des informations de l'utilisateur en cas de connection reussie
-            });
+            }, rememberMe);
+
+        // Redirection après connexion
         navManager.NavigateTo("/", true);
     }
-    /*public async Task RetournerTentatives()
-    {
-    }*/
-    public async Task  Redirection()
-    {
 
-        var custom = (CustomAuthenticationStateProvider)authStateProvider;
-        var authState = await custom.GetAuthenticationStateAsync();
+
+
+    // Redirection améliorée
+    public async Task Redirection()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+
+        // Vérifiez si l'utilisateur est authentifié
         isAuthenticated = authState.User.Identity.IsAuthenticated;
+
         if (isAuthenticated)
         {
-            navManager.NavigateTo("/", true);
+            // Redirigez l'utilisateur connecté vers la page principale
+            navManager.NavigateTo("/", true);        
         }
+
     }
-    protected override async Task OnInitializedAsync() 
+
+
+
+
+    private bool isRedirectionHandled = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        user ??= new();
         await Redirection();
-        //Si il y a deja une connexion rediriger ves la page home
     }
-   
+
 }
 

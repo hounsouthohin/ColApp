@@ -44,7 +44,7 @@ IDEE SECONDAIRE :
 BASE DE DONNEES :
 	TABLES :
 		Utilisateur
-		Etablissement
+		Etablissement  
 		Classe
 		
 
@@ -78,12 +78,27 @@ PAGES:
 
 	
 	
+FONCTIONALITES DE CONNEXION ET D INSCRIPTION : 
+	INSCRIPTION:
+	Exigence du mot de passe securise(longueur minimale, complexite....) X
+	Email de confirmation pour valider l inscription X
+	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) X
+	Options d'inscription  social via Google ou ...  X
+	Protection CSRF (Cross-Site Request Forgery) X
+
+	CONNEXION:
+	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) X
+	Gestion des Sessions   X
+	Options de connexion social via Google ou ... X
+	Limiter les tentatives de connexion  X
+	Protection CSRF (Cross-Site Request Forgery) X
+
+	
 
 
 
 
-
-scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve -Force
+scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve,SeSouvenirTokens -Force
 
 
 

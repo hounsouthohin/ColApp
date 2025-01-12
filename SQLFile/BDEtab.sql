@@ -28,6 +28,13 @@ CREATE TABLE Utilisateur (
     date_naissance VARCHAR NOT NULL,
 );
 
+CREATE TABLE SeSouvenirTokens (
+    Id INT PRIMARY KEY IDENTITY,
+    UserEmail NVARCHAR(256) NOT NULL,
+    Token NVARCHAR(512) NOT NULL,
+    DateExpiration DATETIME NOT NULL
+);
+
 CREATE TABLE Classe (
     idClasse INT IDENTITY(1,1) PRIMARY KEY,        
     nomClasse NVARCHAR(100) NOT NULL,              
