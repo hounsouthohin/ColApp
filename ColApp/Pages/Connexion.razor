@@ -14,7 +14,10 @@
 @inject ServiceConnexion servConnexion
 
 
-<EditForm Model="@user" OnValidSubmit="SoumettreAsync" FormName="connexion">
+<EditForm Model="@user" OnValidSubmit="SoumettreAsync" FormName = "connexion">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-sm-6 col-md-4">
@@ -25,13 +28,15 @@
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <label for="email" class="form-label">Courriel</label>
-                        <InputText type="email" id="email" class="form-control form-control-lg" @bind-Value="user.Courriel" placeholder="Entrez votre courriel" required />
+                        <InputText type="email" id="email" class="form-control form-control-lg" @bind-Value="user.Courriel" placeholder="Entrez votre courriel" />
+                        <ValidationMessage For="@(() => user.Courriel)" />
                     </div>
 
                     <!-- Mot de passe input -->
                     <div class="form-outline mb-4">
                         <label for="password" class="form-label">Mot de passe</label>
-                        <InputText type="password" id="password" class="form-control form-control-lg" @bind-Value="user.MotDePasse" placeholder="Entrez votre mot de passe" required />
+                        <InputText type="password" id="password" class="form-control form-control-lg" @bind-Value="user.MotDePasse" placeholder="Entrez votre mot de passe" />
+                        <ValidationMessage For="@(() => user.MotDePasse)" />
                     </div>
 
                     <!-- Row for checkbox and link -->
@@ -62,6 +67,9 @@
         </div>
     </div>
 </EditForm>
+
+
+
 
 @code {
     private User? user = new User();

@@ -10,97 +10,94 @@
 
 
 
-<EditForm Model="@ServiceInscription" OnSubmit="FormSubmitted" FormName="Inscription">
+<EditForm Model="@ServiceInscription" OnValidSubmit="FormSubmitted" FormName="Inscription">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-sm-6 col-md-4">
-                <!-- Formulaire d'Inscription -->
                 <div class="card shadow-lg rounded p-4">
                     <h2 class="text-center text-primary mb-4">Inscription</h2>
 
-                    <!-- Nom input -->
+                    <!-- Nom -->
                     <div class="form-outline mb-4">
                         <label for="Nom" class="form-label">Nom</label>
-                        <InputText id="Nom" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Nom" placeholder="Entrez votre nom" required />
+                        <InputText id="Nom" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Nom" placeholder="Entrez votre nom" />
+                        <ValidationMessage For="@(() => ServiceInscription.Nom)" />
                     </div>
 
-                    <!-- Prenom input -->
+                    <!-- Prénom -->
                     <div class="form-outline mb-4">
                         <label for="Prenom" class="form-label">Prénom</label>
-                        <InputText id="Prenom" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Prenom" placeholder="Entrez votre prénom" required />
+                        <InputText id="Prenom" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Prenom" placeholder="Entrez votre prénom" />
+                        <ValidationMessage For="@(() => ServiceInscription.Prenom)" />
                     </div>
 
-                    
-                    <!-- Birthday input --> 
+                    <!-- Date de Naissance -->
                     <div class="form-outline mb-4">
                         <label for="DateNaissance" class="form-label">Date de Naissance</label>
-                        <InputDate id="DateNaissance" class="form-control form-control-lg"
-                                   @bind-Value="@ServiceInscription.Date_naissance"
-                                   placeholder="Date de naissance"
-                                   required />
+                        <InputDate id="DateNaissance" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Date_naissance" />
+                        <ValidationMessage For="@(() => ServiceInscription.Date_naissance)" />
                     </div>
-                    
 
-                    <!-- Courriel input -->
+                    <!-- Courriel -->
                     <div class="form-outline mb-4">
                         <label for="Courriel" class="form-label">Courriel</label>
-                        <InputText id="Courriel" type="email" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Courriel" placeholder="Entrez votre courriel" required />
+                        <InputText id="Courriel" type="email" class="form-control form-control-lg" @bind-Value="@ServiceInscription.Courriel" placeholder="Entrez votre courriel" />
+                        <ValidationMessage For="@(() => ServiceInscription.Courriel)" />
                     </div>
 
-                    <!-- Mot de passe input -->
+                    <!-- Mot de Passe -->
                     <div class="form-outline mb-4">
-                        <label for="MDP" class="form-label">Mot de passe</label>
-                        <InputText id="MDP" type="password" class="form-control form-control-lg" @bind-Value="@ServiceInscription.MDP" placeholder="Créez un mot de passe" required />
+                        <label for="MDP" class="form-label">Mot de Passe</label>
+                        <InputText id="MDP" type="password" class="form-control form-control-lg" @bind-Value="@ServiceInscription.MDP" placeholder="Créez un mot de passe" />
+                        <ValidationMessage For="@(() => ServiceInscription.MDP)" />
                     </div>
 
-                    <!-- Submit button -->
+                    <!-- Bouton -->
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">S'inscrire</button>
                     </div>
-
-                    <!-- Divider -->
-                    <hr class="my-4" />
-
-                    <!-- Login link -->
-                    <p class="text-center text-muted mb-0">Vous avez déjà un compte ? <a href="Connexion" class="text-primary">Se connecter</a></p>
-
-                    <!-- Error message if email already used -->
-                    @if (Utiliser)
-                    {
-                        <div class="alert alert-danger mt-3" role="alert">
-                            <p>Le courriel est déjà utilisé.</p>
-                        </div>
-                    }
                 </div>
             </div>
         </div>
     </div>
 </EditForm>
 
+
 @code {
     //Prevoir une case adequoite pour la date de naissance
     bool Utiliser = false;
-
-
+    // Verification du format du mot de passe cote serveur
+    private bool ValidatePassword(string password)
+    {
+        var regex = new System.Text.RegularExpressions.Regex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&#]{6,}$");
+        return regex.IsMatch(password);
+    }
 
     public async void FormSubmitted(EditContext context)
     {
         Utiliser = ServiceInscription.VerifierCourriel(ServiceInscription.Courriel);
         if (Utiliser == false)
         {
-            //Inscription
-            await ServiceInscription.InsererNouveauCompte(ServiceInscription.Nom, ServiceInscription.Prenom,ServiceInscription.Date_naissance, ServiceInscription.Courriel, ServiceInscription.MDP);
-            //Connexion
-            var user = await UserAccountService.GetByUserMail(ServiceInscription.Courriel);
-            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-            await customAuthStateProvider.UpdateAuthenticationState(new UserSession
-                {
-                    Prenom = user.Prenom,
-                    Courriel = user.Courriel,
-                    Role = user.Role
-                });
+            //Inscription si le mot de passe respecte certains criteres
+            if(ValidatePassword(ServiceInscription.MDP)){
+                await ServiceInscription.InsererNouveauCompte(ServiceInscription.Nom, ServiceInscription.Prenom, ServiceInscription.Date_naissance, ServiceInscription.Courriel, ServiceInscription.MDP);
+                //Connexion
+                var user = await UserAccountService.GetByUserMail(ServiceInscription.Courriel);
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+                    {
+                        Prenom = user.Prenom,
+                        Courriel = user.Courriel,
+                        Role = user.Role
+                    });
+
+                navManager.NavigateTo("/", true);
+            }
             
-            navManager.NavigateTo("/", true);
+            
         }
     }
 }
