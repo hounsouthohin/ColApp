@@ -72,7 +72,7 @@
 
 
 @code {
-    private Utilisateur? user = new Utilisateur();
+    private User? user = new User();
     int no;
     public bool isAuthenticated;
     private bool rememberMe;
@@ -82,13 +82,20 @@
 
     public async Task SoumettreAsync()
     {
-        int no = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
-        if (no == -1)
+        int result = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
+
+        if (result == -1)
         {
-            await JS.InvokeVoidAsync("alert", "Connexion échouée");
+            await JS.InvokeVoidAsync("alert", "Connexion échouée : courriel ou mot de passe incorrect.");
+            return;
+        }
+        else if (result == -2)
+        {
+            await JS.InvokeVoidAsync("alert", "Compte temporairement bloqué. Veuillez réessayer plus tard.");
             return;
         }
 
+        // Récupérer les informations utilisateur
         var userAccount = await userAccountService.GetByUserMail(user.Courriel);
 
         var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
@@ -99,9 +106,9 @@
                 Prenom = userAccount.Prenom
             }, rememberMe);
 
-        // Redirection après connexion
-        navManager.NavigateTo("/", true);
+        navManager.NavigateTo("/", true); // Redirection après connexion
     }
+
 
 
 

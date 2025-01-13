@@ -12,7 +12,7 @@ namespace ColApp.Data
         {
         }
 
-        public BDEtabContext(DbContextOptions<BDEtabContext> options)  
+        public BDEtabContext(DbContextOptions<BDEtabContext> options)
             : base(options)
         {
         }
@@ -24,9 +24,10 @@ namespace ColApp.Data
         public virtual DbSet<Message> Messages { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
         public virtual DbSet<PhotoUtilisateur> PhotoUtilisateurs { get; set; } = null!;
+        public virtual DbSet<TentativesConnexion> TentativesConnexions { get; set; } = null!;
         public virtual DbSet<Utilisateur> Utilisateurs { get; set; } = null!;
 
-      
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

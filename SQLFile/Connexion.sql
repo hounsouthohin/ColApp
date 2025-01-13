@@ -1,4 +1,4 @@
-CREATE PROCEDURE connexion(@courriel CHAR(65), -- Taille du courriel à 65 caractères
+ALTER PROCEDURE connexion(@courriel CHAR(65), -- Taille du courriel à 65 caractères
                             @motDePasse NVARCHAR(64), 
                             @valeurConnexion INT OUTPUT)
 AS
