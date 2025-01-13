@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject AuthenticationStateProvider authStateProvider
+@inject CustomAuthenticationStateProvider custom
 @using ColApp.Authentication
 @inject NavigationManager Navigation
 <PageTitle>Index</PageTitle>
@@ -7,28 +8,39 @@
 
 @if (isAuthenticated)
 {
-    <p>Hello your are connected! @name</p>
+    <p>Hello, you are connected! @name</p>
 }
-else if (!isAuthenticated)
+else
 {
-    <p>Hello, your are not Connected! </p>
+    <p>Hello, you are not connected!</p>
 }
+<button @onclick="async () => await custom.LogoutAsync()">Logout!</button>
+
 <SurveyPrompt Title="How is Blazor working for you?" />
 
 @code {
 
     bool isAuthenticated = false;
     string name = "";
+    private bool isInitialized = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+            var custom = (CustomAuthenticationStateProvider)authStateProvider;
+            var authState = await custom.GetAuthenticationStateAsync();
 
-        var custom = (CustomAuthenticationStateProvider)authStateProvider;
-        var authState = await custom.GetAuthenticationStateAsync();
-        isAuthenticated = authState.User.Identity.IsAuthenticated;
-        name = authState.User.Identity.Name;
+            isAuthenticated = authState.User.Identity.IsAuthenticated;
+            name = authState.User.Identity.Name;
+
+            // Marquez comme initialisé pour forcer un re-rendu si nécessaire
+            isInitialized = true;
+            StateHasChanged(); // Force le composant à se re-rendre après la mise à jour
+        }
     }
 }
+
 
 
 

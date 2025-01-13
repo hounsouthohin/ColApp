@@ -22,18 +22,16 @@ namespace ColApp.Models
         [Column("nom")]
         [StringLength(50)]
         [Unicode(false)]
-        [Required(ErrorMessage = "Le nom est obligatoire.")]
-        public string Nom { get; set; } = null!;
+        public string? Nom { get; set; } // Rendu optionnel pour la connexion
 
         [Column("prenom")]
         [StringLength(50)]
         [Unicode(false)]
-        [Required(ErrorMessage = "Le prénom est obligatoire.")]
-        public string Prenom { get; set; } = null!;
+        public string? Prenom { get; set; } // Rendu optionnel pour la connexion
 
         [StringLength(50)]
         [Unicode(false)]
-        public string Role { get; set; } = null!;
+        public string? Role { get; set; }
 
         [Column("courriel")]
         [StringLength(100)]
@@ -46,13 +44,12 @@ namespace ColApp.Models
         [StringLength(100)]
         [Unicode(false)]
         [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
-        [MinLength(8, ErrorMessage = "Le mot de passe doit contenir au moins 8 caractères.")]
-        public string MotDePasse { get; set; } = null!;
+        public string MotDePasse { get; set; } = null!; // Maintient comme requis mais sans restrictions supplémentaires
 
         [Column("sel")]
         [StringLength(100)]
         [Unicode(false)]
-        public string Sel { get; set; } = null!;
+        public string? Sel { get; set; }
 
         [Column("date_naissance")]
         [StringLength(50)]
@@ -73,3 +70,4 @@ namespace ColApp.Models
         public virtual ICollection<PhotoUtilisateur> PhotoUtilisateurs { get; set; }
     }
 }
+

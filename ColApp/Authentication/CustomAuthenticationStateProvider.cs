@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
+
 
 namespace ColApp.Authentication
 {
@@ -8,13 +10,15 @@ namespace ColApp.Authentication
     {
         private readonly ProtectedSessionStorage protectedSessionStorage;
         private readonly ProtectedLocalStorage protectedLocalStorage;
+        private readonly NavigationManager navManager;
 
         private ClaimsPrincipal claimPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
 
-        public CustomAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage, ProtectedLocalStorage protectedLocalStorage)
+        public CustomAuthenticationStateProvider(ProtectedSessionStorage protectedSessionStorage, ProtectedLocalStorage protectedLocalStorage,NavigationManager navManager)
         {
             this.protectedSessionStorage = protectedSessionStorage;
             this.protectedLocalStorage = protectedLocalStorage;
+            this.navManager = navManager;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -70,7 +74,7 @@ namespace ColApp.Authentication
                 // Durée de la session
                 if (rememberMe)
                 {
-                    userSession.ExpiresAt = DateTime.UtcNow.AddDays(1); // Exemple : session valable 1 jours
+                    userSession.ExpiresAt = DateTime.UtcNow.AddHours(1);//Session valable 1 heure 
                     await protectedLocalStorage.SetAsync("RememberMeSession", userSession);
                 }
                 else 
@@ -105,6 +109,9 @@ namespace ColApp.Authentication
 
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
+
+            //Redirection vers la page connexion
+            navManager.NavigateTo("/Connexion",true);
         }
 
 
