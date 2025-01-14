@@ -8,13 +8,14 @@
 
 @if (isAuthenticated)
 {
+    <button @onclick="async () => await custom.LogoutAsync()">Logout!</button>
     <p>Hello, you are connected! @name</p>
 }
 else
 {
     <p>Hello, you are not connected!</p>
 }
-<button @onclick="async () => await custom.LogoutAsync()">Logout!</button>
+
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 

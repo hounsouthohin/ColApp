@@ -1,0 +1,53 @@
+﻿@page "/verify-email/{Token}"
+@using ColApp.Services
+@inject UserAccountService UserAccountService
+@inject NavigationManager navManager
+@inject ILogger<EmailVerification> Logger
+
+<h3>Vérification en cours...</h3>
+
+@code {
+    [Parameter] public string Token { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var user = await UserAccountService.GetUserByTokenAsync(Token);
+
+            if (user != null)
+            {
+                // Vérifier si le token est valide
+                if (user.EmailTokenExpiration >= DateTime.UtcNow)
+                {
+                    // Marquer l'email comme vérifié
+                    user.IsEmailVerified = true;
+                    await UserAccountService.UpdateUserAfterVerificationEmailAsync(user);
+
+                    // Rediriger vers la page de succès
+                    navManager.NavigateTo("/verification-success", true);
+                }
+                else
+                {
+                    // Supprimer l'utilisateur si le token a expiré
+                    await UserAccountService.DeleteUserAsync(user.IdUtilisateur);
+                    Logger.LogInformation($"Utilisateur avec ID {user.IdUtilisateur} supprimé car le token a expiré.");
+
+                    // Rediriger vers la page d'échec
+                    navManager.NavigateTo("/verification-failed", true);
+                }
+            }
+            else
+            {
+                Logger.LogWarning("Aucun utilisateur trouvé pour le token fourni.");
+                navManager.NavigateTo("/verification-failed", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Erreur lors de la vérification de l'email : {ex.Message}");
+            navManager.NavigateTo("/verification-failed", true);
+        }
+    }
+}
+

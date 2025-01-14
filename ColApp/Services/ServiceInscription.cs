@@ -21,11 +21,11 @@ namespace ColApp.Services
         [Required(ErrorMessage = "Le courriel est obligatoire.")]
         [EmailAddress(ErrorMessage = "Le format du courriel n'est pas valide.")]
         public string Courriel { get; set; }
-
+        //PENSER A ADAPTER LE FORMAT DES MOTS DE PASSE
         [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit comporter au moins 8 caractères.")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{6,}$",
-        ErrorMessage = "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial, et être long de 6 caractères.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{8,}$",
+        ErrorMessage = "Le mot de passe doit contenir au moins une majuscule, un chiffre, un caractère spécial, et être long de 8 caractères.")]
         public string MDP { get; set; }
 
         [Required(ErrorMessage = "La date de naissance est obligatoire.")]
@@ -57,7 +57,7 @@ namespace ColApp.Services
             }
             return utiliser;
         }
-
+        //Penser a mettre une alerte si l'utilisateur existe deja dans la base de donnee : NB
         public async Task InsererNouveauCompte(string nom, string prenom, DateTime date_naissance, string email, string MDP)
         {
             var dbContext = await _BDEtabContext.CreateDbContextAsync();

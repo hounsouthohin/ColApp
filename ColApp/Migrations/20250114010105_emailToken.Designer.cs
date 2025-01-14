@@ -4,6 +4,7 @@ using ColApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ColApp.Migrations
 {
     [DbContext(typeof(BDEtabContext))]
-    partial class BDEtabContextModelSnapshot : ModelSnapshot
+    [Migration("20250114010105_emailToken")]
+    partial class emailToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,12 +361,6 @@ namespace ColApp.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("date_naissance");
 
-                    b.Property<bool?>("IsEmailVerified")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(0)))");
-
                     b.Property<string>("MotDePasse")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -406,10 +402,6 @@ namespace ColApp.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(100)")
                         .HasColumnName("sel");
-
-                    b.Property<string>("VerifyEmailToken")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("IdUtilisateur")
                         .HasName("PK__Utilisat__5366DB197F114924");

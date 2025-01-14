@@ -80,25 +80,27 @@ PAGES:
 	
 FONCTIONALITES DE CONNEXION ET D INSCRIPTION : 
 	INSCRIPTION:
-	Exigence du mot de passe securise(longueur minimale, complexite....) X
-	Email de confirmation pour valider l inscription X
-	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) X
+	Exigence du mot de passe securise(longueur minimale, complexite....) V
+	Email de confirmation pour valider l inscription V
+	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V
 	Options d'inscription  social via Google ou ...  X
-	Protection CSRF (Cross-Site Request Forgery) X
+	Protection CSRF (Cross-Site Request Forgery) V
+	Traduction en langue Francaise ou anglaise X
 
 	CONNEXION:
-	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) X
-	Gestion des Sessions   X
+	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) V
+	Gestion des Sessions   V
 	Options de connexion social via Google ou ... X
-	Limiter les tentatives de connexion  X
-	Protection CSRF (Cross-Site Request Forgery) X
+	Limiter les tentatives de connexion  V
+	Protection CSRF (Cross-Site Request Forgery) V
+	Traduction en langue Française ou anglaise X
 
 	
 
 
 
 
-scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve,SeSouvenirTokens -Force
+scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve,TentativesConnexion -Force
 
 
 
@@ -114,5 +116,32 @@ Export-PfxCertificate -Cert "Cert:\LocalMachine\My\$($cert.Thumbprint)" `
     -Password (ConvertTo-SecureString -String "YourPassword" -Force -AsPlainText)
 
 Export-Certificate -Cert "Cert:\LocalMachine\My\$($cert.Thumbprint)" -FilePath "C:\Users\HP PAVILION\Desktop\portfolio\RedirectionApp\Redirection\SQLServerSSL.pfx"
+
+
+
+
+
+
+
+Inscription: prevoir une alerte au cas ou l'utilisateur tente de s'inscrire avec le meme courriel
+
+	     Supprimer l'utilisateur une fois que le token est expiré car cela encombre ma base de donnéé
+	     
+	     La partie de la session : Plus besoin de créer une nouvelle session au niveau de la page Inscription 
+
+Connexion : verifier si le compte est déjà actif avant de connecter l'utilisateur
+	 
+
+
+
+
+
+
+
+
+
+
+
+
 
 

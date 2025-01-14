@@ -50,6 +50,12 @@ namespace ColApp.Models
         public string? PasswordResetToken { get; set; }
         [Column(TypeName = "datetime")]
         public DateTime? ResetTokenExpires { get; set; }
+        [Required]
+        public bool? IsEmailVerified { get; set; }
+        [StringLength(100)]
+        public string? VerifyEmailToken { get; set; }
+        [Column("emailTokenExpiration", TypeName = "datetime")]
+        public DateTime? EmailTokenExpiration { get; set; }
 
         [InverseProperty("IdUtilisateurNavigation")]
         public virtual ICollection<Message> Messages { get; set; }

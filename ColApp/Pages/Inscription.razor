@@ -2,11 +2,16 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Services
 @using Authentication
+@using ColApp.Interfaces
+@using ColApp.Partials
 @inject ServiceInscription ServiceInscription
 @inject AuthenticationStateProvider AuthStateProvider
 @inject UserAccountService UserAccountService
 @inject NavigationManager navManager
 @inject ILogger<Inscription> Logger
+@inject ITokenService tokenService;
+@inject IEmailSender emailSender;
+@inject IJSRuntime JS 
 
 
 
@@ -67,7 +72,7 @@
 
 
 @code {
-    //Prevoir une case adequoite pour la date de naissance
+    
     bool Utiliser = false;
     // Verification du format du mot de passe cote serveur
     private bool ValidatePassword(string password)
@@ -82,11 +87,33 @@
         if (Utiliser == false)
         {
             //Inscription si le mot de passe respecte certains criteres
-            if(ValidatePassword(ServiceInscription.MDP)){
+            if (ValidatePassword(ServiceInscription.MDP))
+            {
                 await ServiceInscription.InsererNouveauCompte(ServiceInscription.Nom, ServiceInscription.Prenom, ServiceInscription.Date_naissance, ServiceInscription.Courriel, ServiceInscription.MDP);
                 //Connexion
                 var user = await UserAccountService.GetByUserMail(ServiceInscription.Courriel);
-                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+
+                User utilisateur = new User()
+                    {
+                        MotDePasse = user.MotDePasse,
+                        Role = user.Role,
+                        Courriel = user.Courriel,
+                        Prenom = user.Prenom
+                    };
+
+                // Générer un token de vérification
+                var token = tokenService.GenerateEmailVerificationToken(user);
+                // Envoyer un email de vérification
+                var verificationLink = $"{navManager.BaseUri}verify-email/{token}"; 
+                await emailSender.SendEmailAsync(
+                    ServiceInscription.Courriel,
+                    "Vérifiez votre email",
+                    $"Veuillez vérifier votre email en cliquant sur le lien suivant : <a href='{verificationLink}'>Vérifier mon email</a>"
+                );
+
+                // Rediriger l'utilisateur vers une page de confirmation
+                navManager.NavigateTo("/inscription-confirmation", true);
+                /*var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
                 await customAuthStateProvider.UpdateAuthenticationState(new UserSession
                     {
                         Prenom = user.Prenom,
@@ -94,10 +121,13 @@
                         Role = user.Role
                     });
 
-                navManager.NavigateTo("/", true);
+                navManager.NavigateTo("/", true);*/
             }
-            
-            
+
+
+        }
+        else{
+            await JS.InvokeVoidAsync("alert", "Inscription échouée : Compte existe déja.");
         }
     }
 }

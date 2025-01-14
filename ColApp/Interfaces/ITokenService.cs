@@ -7,6 +7,7 @@ namespace ColApp.Interfaces
     public interface ITokenService
     {
         string GeneratePasswordResetToken(Utilisateur user);
+        string GenerateEmailVerificationToken(Utilisateur user);
         bool ValidatePasswordResetToken(string token, Utilisateur user);
     }
 
@@ -17,7 +18,7 @@ namespace ColApp.Interfaces
        
         public TokenService(UserAccountService userAccountService)
         {
-            _userAccountService = userAccountService;
+            _userAccountService = userAccountService;   
         }
 
         public string GeneratePasswordResetToken(Utilisateur user)
@@ -30,10 +31,24 @@ namespace ColApp.Interfaces
             _tokenStore[token] = (user.Courriel, expirationTime);
 
             //inserer le token dans la base de donnee
-            _userAccountService.SaveTokenAsync(token,user.Courriel,expirationTime);
+            _userAccountService.SavePasswordTokenAsync(token,user.Courriel,expirationTime);
 
             return token;
         }
+
+        //FONCTIONALITE DE VERIFICATION PAR EMAIL DE L'INSCRIPTION
+        public string GenerateEmailVerificationToken(Utilisateur user)
+        {
+            // Générer un token unique
+            var token = Guid.NewGuid().ToString();
+            var expirationTime = DateTime.UtcNow.AddMinutes(1); // Expire après 24 heures
+                
+            // Sauvegarder le token dans la base de données
+            _userAccountService.SaveEmailTokenAsync(token, user.Courriel, expirationTime);
+
+            return token;
+        }
+
 
         public bool ValidatePasswordResetToken(string token, Utilisateur user)
         {
@@ -48,6 +63,6 @@ namespace ColApp.Interfaces
             }
 
             return false;
-        }
+        }   
     }
 }

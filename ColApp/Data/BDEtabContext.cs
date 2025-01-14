@@ -120,6 +120,8 @@ namespace ColApp.Data
             {
                 entity.HasKey(e => e.IdUtilisateur)
                     .HasName("PK__Utilisat__5366DB197F114924");
+
+                entity.Property(e => e.IsEmailVerified).HasDefaultValueSql("(CONVERT([bit],(0)))");
             });
 
             OnModelCreatingPartial(modelBuilder);
