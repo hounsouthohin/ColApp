@@ -13,8 +13,7 @@
 @inject NavigationManager navManager
 @inject ServiceConnexion servConnexion
 
-
-<EditForm Model="@user" OnValidSubmit="SoumettreAsync" FormName = "connexion">
+<EditForm Model="@user" OnValidSubmit="SoumettreAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -54,7 +53,17 @@
 
                     <!-- Submit button -->
                     <div class="d-grid">
-                        <button data-mdb-ripple-init type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                        <button type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+                    </div>
+
+                    <!-- Divider -->
+                    <hr class="my-4" />
+
+                    <!-- Social login buttons -->
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-outline-danger btn-lg" @onclick="ConnexionAvecGoogle">
+                            <i class="bi bi-google"></i> Se connecter avec Google
+                        </button>
                     </div>
 
                     <!-- Divider -->
@@ -69,8 +78,6 @@
 </EditForm>
 
 
-
-
 @code {
     private User? user = new User();
     int no;
@@ -78,7 +85,13 @@
     private bool rememberMe;
 
 
-
+    //CONNEXION VIA GOOGLE 
+    private void ConnexionAvecGoogle()
+    {
+        // Redirection vers le système d'authentification Google
+        var returnUrl = navManager.BaseUri;
+        navManager.NavigateTo($"/signin-google?returnUrl={returnUrl}", forceLoad: true);
+    }
 
     public async Task SoumettreAsync()
     {
