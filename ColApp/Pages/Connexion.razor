@@ -94,6 +94,12 @@
             await JS.InvokeVoidAsync("alert", "Compte temporairement bloqué. Veuillez réessayer plus tard.");
             return;
         }
+        //Si le compte est inactif
+        else if (result == -3)
+        {
+            await JS.InvokeVoidAsync("alert", "Compte non actif!. Veuillez vérifier votre boîte mail pour l'activation du compte!");
+            return;
+        }
 
         // Récupérer les informations utilisateur
         var userAccount = await userAccountService.GetByUserMail(user.Courriel);

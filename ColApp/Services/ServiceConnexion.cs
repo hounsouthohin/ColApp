@@ -34,8 +34,11 @@ namespace ColApp.Services
         {
             var dbContext = _factory.CreateDbContextAsync().Result;
 
-
-            // Vérifier si le courriel est bloqué
+            var isVerified = dbContext.Utilisateurs.Where(x => x.Courriel == courriel).Select(x => x.IsEmailVerified).FirstOrDefault();
+            bool isActive = (bool)isVerified;//Verifier l'etat du compte si il est actif ou non
+           
+           
+            // Vérifier si le compte est bloqué
             var tentative = await dbContext.TentativesConnexions
                 .FirstOrDefaultAsync(t => t.Courriel == courriel);
 
@@ -99,15 +102,21 @@ namespace ColApp.Services
                 return -1; // Mot de passe ou courriel incorrect
             }
 
-            // Si connexion réussie, supprimer les tentatives de connexion
-            if (tentative != null)
+            // Si connexion réussie,Verifier d'abord que le compte est actif Si oui:  supprimer les tentatives de connexion et renvoyer l'id de l'utilisateur Si non tu retourne -3
+            if (isActive)
             {
-                dbContext.TentativesConnexions.Remove(tentative);
-                await dbContext.SaveChangesAsync();
+                if (tentative != null)
+                {
+                    dbContext.TentativesConnexions.Remove(tentative);
+                    await dbContext.SaveChangesAsync();
+                }  
+            }
+            //Si le compte est inactif on invite l'utilisateur a verifier son inscription si le token a expirer l'utilisateur sera   et on renvoie - 3
+            else if (!isActive) {
+                connexionResult = -3;
             }
 
-            return connexionResult; // Retourner l'ID de l'utilisateur
-
+            return connexionResult;
         }
 
         public async Task logout()
@@ -118,12 +127,6 @@ namespace ColApp.Services
             );
         }
 
-
-        /* public async Task GererTentatives()
-         {
-             var authState = await _authState.GetAuthenticationStateAsync();
-             isAuthenticated = authState.User.Identity.IsAuthenticated;
-         }*/
     }
 }
 

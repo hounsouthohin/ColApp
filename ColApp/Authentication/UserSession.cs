@@ -7,7 +7,7 @@
         public string Prenom { get; set; }
         public string Role { get; set; }
 
-        public DateTime ExpiresAt { get; set; }
+        public DateTime ExpiresAt { get; set; } 
     }
 }
     

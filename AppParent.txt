@@ -83,14 +83,14 @@ FONCTIONALITES DE CONNEXION ET D INSCRIPTION :
 	Exigence du mot de passe securise(longueur minimale, complexite....) V
 	Email de confirmation pour valider l inscription V
 	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V
-	Options d'inscription  social via Google ou ...  X
+	Options d'inscription  social via Google ou ...  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Francaise ou anglaise X
 
 	CONNEXION:
 	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) V
 	Gestion des Sessions   V
-	Options de connexion social via Google ou ... X
+	Options de connexion social via Google ou ... V
 	Limiter les tentatives de connexion  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Française ou anglaise X
@@ -128,8 +128,11 @@ Inscription: prevoir une alerte au cas ou l'utilisateur tente de s'inscrire avec
 	     Supprimer l'utilisateur une fois que le token est expiré car cela encombre ma base de donnéé
 	     
 	     La partie de la session : Plus besoin de créer une nouvelle session au niveau de la page Inscription 
+	     
+	     Penser a adapter le format du mot de passe lors de l'inscription et de la connexion
 
-Connexion : verifier si le compte est déjà actif avant de connecter l'utilisateur
+Connexion : verifier si le compte est déjà actif avant de connecter l'utilisateur 
+
 	 
 
 
