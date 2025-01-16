@@ -89,11 +89,12 @@ FONCTIONALITES DE CONNEXION ET D INSCRIPTION :
 
 	CONNEXION:
 	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) V
-	Gestion des Sessions   V
+	Gestion des Sessions  AJOUTER UNE ALERTE POUR SIGNALER QUE LA SESSION A EXPIRE X
 	Options de connexion social via Google ou ... V
 	Limiter les tentatives de connexion  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Française ou anglaise X
+	
 
 	
 

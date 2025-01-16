@@ -25,7 +25,11 @@ namespace ColApp.Services
                         .FirstOrDefault();
             return user;
         }
+        //Creer un compte 
+        public async Task CreateUserAsync()
+        {
 
+        }
         public async Task<Utilisateur>? GetUserByResetTokenAsync(string token)
         {
             var dbContext = await _factory.CreateDbContextAsync();
