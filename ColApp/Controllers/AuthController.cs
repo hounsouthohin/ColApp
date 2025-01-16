@@ -11,11 +11,14 @@ namespace ColApp.Controllers
     public class AuthController : Controller
     {
         private readonly UserAccountService _userAccountService;
-        public AuthController(UserAccountService userAccountService) 
+       
+        public AuthController(UserAccountService userAccountService)
         {
             _userAccountService = userAccountService;
         }
-        [HttpGet("signin-google")]
+
+        // Cette méthode gère le callback après que Google a authentifié l'utilisateur.
+        [HttpGet("signin-google-callback")]
         public async Task<IActionResult> SignInGoogleCallback()
         {
             var authenticateResult = await HttpContext.AuthenticateAsync("External");
@@ -31,7 +34,7 @@ namespace ColApp.Controllers
             var name = authenticateResult.Principal.FindFirstValue(ClaimTypes.Name);
             var avatar = authenticateResult.Principal.FindFirstValue("urn:google:picture");
 
-            // Rechercher l'utilisateur dans la base de données  : NB: LE COURRIEL DU COMPTE DE L'UTILISATEUR DOIT CORRESPONDRE AU COURRIEL DE L'APPLICATION
+            // Rechercher l'utilisateur dans la base de données
             var user = await _userAccountService.GetByUserMail(email);
 
             if (user == null)
@@ -41,20 +44,20 @@ namespace ColApp.Controllers
             }
 
             // Si l'utilisateur existe, continuer avec la logique de connexion
-            // Vous pouvez ajouter des informations dans le contexte utilisateur si nécessaire
             return Redirect("/"); // Rediriger vers la page d'accueil
         }
 
-
+        // Cette méthode initie l'authentification avec Google
         [HttpGet("signin-google")]
         [AllowAnonymous]
         public IActionResult SignInGoogle()
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("SignInGoogleCallback"),
+                RedirectUri = Url.Action("SignInGoogleCallback", "auth"), // Spécifiez la route correcte pour la redirection
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
     }
 }
+

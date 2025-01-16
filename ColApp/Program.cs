@@ -68,7 +68,7 @@ namespace ColApp
             {
                 googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                googleOptions.CallbackPath = "/signin-google"; // URI de redirection
+                googleOptions.CallbackPath = "/auth/signin-google-callback"; // URI de redirection
             });
 
             // Construire l'application

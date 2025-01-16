@@ -88,18 +88,19 @@
     //CONNEXION VIA GOOGLE 
     private void ConnexionAvecGoogle()
     {
-        // Redirection vers le système d'authentification Google
+        // Redirection vers la route correcte définie dans AuthController
         var returnUrl = navManager.BaseUri;
-        navManager.NavigateTo($"/signin-google?returnUrl={returnUrl}", forceLoad: true);
+        navManager.NavigateTo($"/auth/signin-google?returnUrl={returnUrl}", forceLoad: true);
     }
 
-    public async Task SoumettreAsync()
+
+    public async Task SoumettreAsync()     
     {
         int result = await servConnexion.VerifierConnexionAsync(user.Courriel, user.MotDePasse);
 
         if (result == -1)
         {
-            await JS.InvokeVoidAsync("alert", "Connexion échouée : courriel ou mot de passe incorrect.");
+            await JS.InvokeVoidAsync("alert", "Connexion échouée : courriel ou mot de passe incorrect."); 
             return;
         }
         else if (result == -2)
