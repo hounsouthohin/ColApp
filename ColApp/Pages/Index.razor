@@ -2,46 +2,68 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject CustomAuthenticationStateProvider custom
 @using ColApp.Authentication
+@using System.Text.Json
 @inject NavigationManager Navigation
+@inject CustomAuthenticationStateProvider customAuthStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
+
 <PageTitle>Index</PageTitle>
 
+<h3>Accueil</h3>
 
 @if (isAuthenticated)
 {
-    <button @onclick="async () => await custom.LogoutAsync()">Logout!</button>
-    <p>Hello, you are connected! @name</p>
+    <p>Bonjour, @userName !</p>
+    <button @onclick="Logout">Déconnexion</button>
 }
 else
 {
-    <p>Hello, you are not connected!</p>
+    <p>Vous n'êtes pas connecté.</p>
 }
 
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
 @code {
-
-    bool isAuthenticated = false;
-    string name = "";
-    private bool isInitialized = false;
+    private bool isAuthenticated = false;
+    private string userName = "";
+    private bool hasInitialized = false; // Empêche les appels multiples dans OnAfterRenderAsync
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && !hasInitialized)
         {
-            var custom = (CustomAuthenticationStateProvider)authStateProvider;
-            var authState = await custom.GetAuthenticationStateAsync();
+            hasInitialized = true;
 
-            isAuthenticated = authState.User.Identity.IsAuthenticated;
-            name = authState.User.Identity.Name;
+            // Récupérez la sessionKey depuis l'URL
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
 
-            // Marquez comme initialisé pour forcer un re-rendu si nécessaire
-            isInitialized = true;
-            StateHasChanged(); // Force le composant à se re-rendre après la mise à jour
+            if (query.TryGetValue("sessionKey", out var sessionKey))
+            {
+                // Chargez les informations utilisateur associées à la sessionKey
+                var sessionData = HttpContextAccessor.HttpContext.Session.GetString(sessionKey);
+
+                if (!string.IsNullOrEmpty(sessionData))
+                {
+                    var userSession = JsonSerializer.Deserialize<UserSession>(sessionData);
+
+                    if (userSession != null)
+                    {
+                        // Mettez à jour l'état d'authentification
+                        await customAuthStateProvider.UpdateAuthenticationState(userSession);
+                        isAuthenticated = true;
+                        userName = userSession.Prenom;
+
+                        // Forcer un re-rendu après mise à jour de l'état
+                        StateHasChanged();
+                    }
+                }
+            }
         }
     }
+
+    private async Task Logout()
+    {
+        await customAuthStateProvider.LogoutAsync();
+        Navigation.NavigateTo("/");
+    }
 }
-
-
-
 

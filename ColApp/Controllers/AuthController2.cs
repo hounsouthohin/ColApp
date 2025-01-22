@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using ColApp.Authentication;
+using System.Text.Json;
+
 
 namespace ColApp.Controllers
 {
@@ -59,7 +61,7 @@ namespace ColApp.Controllers
 
                 if (!authenticateResult.Succeeded || authenticateResult.Principal == null)
                 {
-                    return Redirect("/connexion");          
+                    return Redirect("/connexion");
                 }
 
                 var email = authenticateResult.Principal.FindFirstValue(ClaimTypes.Email);
@@ -70,25 +72,28 @@ namespace ColApp.Controllers
                     return Redirect("/connexion");
                 }
 
+                // Vérifiez si l'utilisateur existe
                 var user = await _userAccountService.GetByUserMail(email);
 
                 if (user == null)
                 {
                     return Redirect("/inscription");
                 }
-                //Creer une session pour l'utilisateur
-                
-                // Récupérer returnUrl depuis AuthenticationProperties
-                var returnUrl = authenticateResult.Properties?.Items.ContainsKey("returnUrl") == true
-                    ? authenticateResult.Properties.Items["returnUrl"]
-                    : Url.Content("~/"); // Par défaut : page d'accueil
 
-                // Valider que returnUrl est une URL locale
-                if (!Url.IsLocalUrl(returnUrl))
+                // Générez une clé temporaire pour la session
+                var sessionKey = Guid.NewGuid().ToString();
+
+                // Stockez les informations utilisateur associées à cette clé (par exemple, dans la mémoire ou une base de données)
+                HttpContext.Session.SetString(sessionKey, JsonSerializer.Serialize(new UserSession
                 {
-                    returnUrl = Url.Content("~/");
-                }
+                    Courriel = user.Courriel,
+                    Role = user.Role,
+                    Prenom = user.Prenom,
+                    ExpiresAt = DateTime.UtcNow.AddHours(1)
+                }));
 
+                // Redirigez l'utilisateur vers la page d'accueil avec le paramètre sessionKey
+                var returnUrl = Url.Content($"~/?sessionKey={sessionKey}");
                 return Redirect(returnUrl);
             }
             catch (Exception ex)

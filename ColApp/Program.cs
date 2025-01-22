@@ -82,7 +82,14 @@ namespace ColApp
                 googleOptions.BackchannelTimeout = TimeSpan.FromMinutes(2);
                 
             });
-            
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1); // Durée de vie de la session
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
 
             // Construire l'application
             var app = builder.Build();
@@ -103,6 +110,7 @@ namespace ColApp
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             // Configurer les routes des contrôleurs
             app.MapControllers(); // **Ajout des routes des contrôleurs**
