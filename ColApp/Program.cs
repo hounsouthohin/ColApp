@@ -5,6 +5,7 @@ using ColApp.Models;
 using ColApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.Data.SqlClient;
@@ -19,10 +20,10 @@ namespace ColApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Charger les secrets utilisateur si en mode développement
-            /*if (builder.Environment.IsDevelopment())
+            // Charger les secrets utilisateur si en mode développement     
+            /*if (builder.Environment.IsDevelopment())    
             {
-                builder.Configuration.AddUserSecrets<Program>();  // Charge les secrets en développement
+                builder.Configuration.AddUserSecrets<Program>();  // Charge les secrets en développement     
             }*/
 
 
@@ -33,7 +34,7 @@ namespace ColApp
             var conStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
             conStrBuilder.Password = builder.Configuration["MDP"];
             
-
+                
             // Ajouter la configuration de l'application
             builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
@@ -57,19 +58,31 @@ namespace ColApp
             builder.Services.AddSingleton<ITokenService, TokenService>();
             builder.Services.AddSingleton<PasswordResetService>();
 
+
             // Ajouter l'authentification
             builder.Services.AddAuthentication(options =>
-            {
+            {   
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-            .AddCookie() // Pour les cookies d'authentification
+            .AddCookie(options => { 
+                  options.Cookie.Name = ".AspNetCore.Cookies"; // Nom du cookie (par défaut)
+                
+                 
+            })
+ // Pour les cookies d'authentification
             .AddGoogle(googleOptions =>
             {
                 googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-                googleOptions.CallbackPath = "/auth/signin-google-callback"; // URI de redirection
+                googleOptions.CallbackPath = "/controller/signin-google-callback/";// URI de redirection ajouter toujours le / a la fin
+
+                googleOptions.SaveTokens = true;  // Enregistrer les tokens pour éviter les erreurs de session
+                                                  // Augmenter le délai pour éviter l'expiration : c a d qu'elle evite des erreurs si google prend plus de temps pour repondre
+                googleOptions.BackchannelTimeout = TimeSpan.FromMinutes(2);
+                
             });
+            
 
             // Construire l'application
             var app = builder.Build();
@@ -87,6 +100,7 @@ namespace ColApp
             app.UseRouting();
 
             // Ajouter le middleware d'authentification
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 

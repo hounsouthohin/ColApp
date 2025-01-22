@@ -89,8 +89,8 @@
     private void ConnexionAvecGoogle()
     {
         // Redirection vers la route correcte définie dans AuthController
-        var returnUrl = navManager.BaseUri;
-        navManager.NavigateTo($"/auth/signin-google?returnUrl={returnUrl}", forceLoad: true);
+        var returnUrl = navManager.BaseUri;//l'url de base de l'application
+        navManager.NavigateTo($"/controller/signin-google?returnUrl={returnUrl}", forceLoad: true);
     }
 
 
