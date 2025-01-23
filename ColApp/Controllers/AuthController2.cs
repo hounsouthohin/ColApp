@@ -34,7 +34,7 @@ namespace ColApp.Controllers
             {
                 returnUrl = Url.Content("~/"); // Défaut : page d'accueil
             }
-
+            //
             var properties = new AuthenticationProperties
             {
                 RedirectUri = Url.Action("SignInGoogleCallback", "AuthController2"), // Callback après authentification

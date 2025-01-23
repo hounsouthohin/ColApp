@@ -36,7 +36,7 @@ else
             var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
             var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
 
-            if (query.TryGetValue("sessionKey", out var sessionKey))
+            if (query.TryGetValue("sessionKey", out var sessionKey))// en cas d'une connexion via google 
             {
                 // Chargez les informations utilisateur associées à la sessionKey
                 var sessionData = HttpContextAccessor.HttpContext.Session.GetString(sessionKey);
@@ -56,6 +56,17 @@ else
                         StateHasChanged();
                     }
                 }
+            }
+
+            //En cas d'une connexion simple
+            else {
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+                var authState = await customAuthStateProvider.GetAuthenticationStateAsync();
+
+                // Vérifiez si l'utilisateur est authentifié
+                isAuthenticated = authState.User.Identity.IsAuthenticated;
+                userName = authState.User.Identity.Name;
+                StateHasChanged();
             }
         }
     }
