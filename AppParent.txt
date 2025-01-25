@@ -81,8 +81,8 @@ PAGES:
 FONCTIONALITES DE CONNEXION ET D INSCRIPTION : 
 	INSCRIPTION:
 	Exigence du mot de passe securise(longueur minimale, complexite....) V
-	Email de confirmation pour valider l inscription V
-	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V
+	Email de confirmation pour valider l inscription X
+	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V , pouvoir faire la connexion via facebook X
 	Options d'inscription  social via Google ou ...  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Francaise ou anglaise X
@@ -95,6 +95,12 @@ FONCTIONALITES DE CONNEXION ET D INSCRIPTION :
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Française ou anglaise X
 	
+
+
+FONCTIONALITES POUR LA PAGE DACCUEIL 
+	 Petit formulaire pour permettre a l'utilisateur d'entrer son No PV 
+	
+	 
 
 	
 

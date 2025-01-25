@@ -3,7 +3,9 @@ using ColApp.Data;
 using ColApp.Interfaces;
 using ColApp.Models;
 using ColApp.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace ColApp
 {
@@ -81,7 +84,28 @@ namespace ColApp
                                                   // Augmenter le délai pour éviter l'expiration : c a d qu'elle evite des erreurs si google prend plus de temps pour repondre
                 googleOptions.BackchannelTimeout = TimeSpan.FromMinutes(2);
                 
-            });
+            })
+.AddFacebook(facebookOptions =>
+{
+    facebookOptions.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+    facebookOptions.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+    facebookOptions.CallbackPath = "/auth/signin-facebook-callback/"; // URI de redirection
+    facebookOptions.SaveTokens = true; // Enregistrer les tokens pour les récupérer plus tard
+
+    // Ajoutez les permissions nécessaires
+    facebookOptions.Scope.Add("email");
+    facebookOptions.Scope.Add("public_profile");
+
+    // Ajoutez des mappages pour récupérer les informations
+    facebookOptions.Fields.Add("email");
+    facebookOptions.Fields.Add("name");
+
+    facebookOptions.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+    facebookOptions.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+});
+            ;
+
+            ;
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSession(options =>
             {
