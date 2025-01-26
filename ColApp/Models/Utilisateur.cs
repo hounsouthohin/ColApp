@@ -11,8 +11,8 @@ namespace ColApp.Models
     {
         public Utilisateur()
         {
+            Disponibilites = new HashSet<Disponibilite>();
             Messages = new HashSet<Message>();
-            PhotoUtilisateurs = new HashSet<PhotoUtilisateur>();
         }
 
         [Key]
@@ -58,8 +58,8 @@ namespace ColApp.Models
         public DateTime? EmailTokenExpiration { get; set; }
 
         [InverseProperty("IdUtilisateurNavigation")]
-        public virtual ICollection<Message> Messages { get; set; }
+        public virtual ICollection<Disponibilite> Disponibilites { get; set; }
         [InverseProperty("IdUtilisateurNavigation")]
-        public virtual ICollection<PhotoUtilisateur> PhotoUtilisateurs { get; set; }
+        public virtual ICollection<Message> Messages { get; set; }
     }
 }

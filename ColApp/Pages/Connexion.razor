@@ -125,6 +125,11 @@
             await JS.InvokeVoidAsync("alert", "Compte non actif!. Veuillez vérifier votre boîte mail pour l'activation du compte!");
             return;
         }
+        else if (result == -4)
+        {
+            await JS.InvokeVoidAsync("alert", "Compte inexistant!. Veuillez vous inscrire en creant un nouveau compte!");
+            return;
+        }
 
         // Récupérer les informations utilisateur
         var userAccount = await userAccountService.GetByUserMail(user.Courriel);

@@ -23,11 +23,13 @@ namespace ColApp.Services
         public string Courriel { get; set; }
 
         [Required(ErrorMessage = "Le mot de passe est obligatoire.")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit comporter au moins 8 caractères.")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&\-_.~]{8,}$",
-        ErrorMessage = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre, un caractère spécial (@$!%*?&#-_~), et être long de 8 caractères ou plus.")]
-        public string MDP { get; set; }
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Le mot de passe doit comporter entre 8 et 100 caractères.")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#\-_~])[A-Za-z\d@$!%*?&#\-_~]{8,}$",
+    ErrorMessage = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@$!%*?&#-_~).")]
 
+       
+        public string MDP { get; set; }
+       
 
         [Required(ErrorMessage = "La date de naissance est obligatoire.")]
         [DataType(DataType.Date, ErrorMessage = "La date de naissance n'est pas valide.")]
@@ -82,6 +84,8 @@ namespace ColApp.Services
             return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
         }
     }
+
+
 }
 
 

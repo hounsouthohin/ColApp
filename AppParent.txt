@@ -23,16 +23,20 @@ IDEE SECONDAIRE :
 								      La LISTE DES COURS avec le NOM des PROFESSEURS DE l'étudient 
 
 									     
-	ACTIONS A ENVISAGER POUR LES UTILISATEURS :
+	ACTIONS A ENVISAGER POUR LES Eleves :
 						  PRISE DE RENDEZ-VOUS PAR L'ETUDIENT 
+	ACTIONS A ENVISAGER POUR LES PROVISEURS OU ADMINISTRATEURS:
 					          Les ADMINISTRATEURS  ou PROVISEURS  peuvent CHANGER UNE ADMINISTRATION
+							Changer de classe a l'eleve
+							Supprimer un elve de son etablissement
+						  
 	
 	FONCTIONNALITES A DEVELLOPER NECESSAIREMENT: 
 				      	           ENVOIE de NOTIFICATIONS au ELEVES
 					           Prévoir des PARAMETRES pour CHANGER DE MOT DE PASSE , CHANGER de COURRIEL, CHANGER de PHOTO DE PROFILE
 						   AGENDA SCOLAIRE
 
-	FONCTIONNALITES SUPPLEMENTAIRES :
+	FONCTIONNALITES SUPPLEMENTAIRES  A NE PAS PRENDRE EN CONSIDERATION POUR LE MOMENT:
 					
 					RECEPTION des notes et bulletins scolaires par les professeurs dans l'application
 					Paiement de la scolarité par carte bancaire
@@ -41,40 +45,45 @@ IDEE SECONDAIRE :
 					ETABLIR UN DELAI POUR LA MODIFICATION
 					
 					
-BASE DE DONNEES :
-	TABLES :
-		Utilisateur
-		Etablissement  
-		Classe
+
 		
 
 PAGES: 
-	ACCUEIL
+	ACCUEIL V
 		
-		
-	Horaire
+	Mon Etablissement V	
+	
+	Horaire X
 		Liste des cours
 		Programme
 
-	Courriels
+	Courriels V
 		Liste des messages
 		Supprimer message
 		Nouveau message
 		GROUPE
 		RECHERCHE
 
-	Cours
+	Cours X
 		Liste des cours :
 				Cliquer sur chaque Cours pour avoir acces a ses informations
 	
-	Rendez-Vous
+	Rendez-Vous V
 
-	Paramètres
+	ParamètresUtilisateur X
 		ChangerMDP
-		ChangerPP
 		ChangerCourriel
+		
 
-	Agenda : Un calendrier avec les evenements de l'etablissement
+	ParamètresEleve X
+		ChangerPP
+		
+
+	Agenda : Un calendrier avec les evenements de l'etablissement X
+
+	A propos : 
+
+	Confidentialité : 
 
 	
 	
@@ -82,7 +91,7 @@ FONCTIONALITES DE CONNEXION ET D INSCRIPTION :
 	INSCRIPTION:
 	Exigence du mot de passe securise(longueur minimale, complexite....) V
 	Email de confirmation pour valider l inscription X
-	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V , pouvoir faire la connexion via facebook X
+	Feedback immédiat pendant l'inscription(messages d'erreurs pour les champs invalides) V 
 	Options d'inscription  social via Google ou ...  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Francaise ou anglaise X
@@ -90,24 +99,132 @@ FONCTIONALITES DE CONNEXION ET D INSCRIPTION :
 	CONNEXION:
 	Feedback immédiat pendant la connexion(messages d'erreurs pour les champs invalides) V
 	Gestion des Sessions  AJOUTER UNE ALERTE POUR SIGNALER QUE LA SESSION A EXPIRE X
-	Options de connexion social via Google ou ... V
 	Limiter les tentatives de connexion  V
 	Protection CSRF (Cross-Site Request Forgery) V
 	Traduction en langue Française ou anglaise X
+	FINALISER LA CONCEPTION DE LA FONCTIONALITE DE CONNEXION OU D INSCRIPTION VIA LES SERVICES SOCIAUX X
+	FINALISER LA CONCEPTION DE LA FONCTIONALITE D ENVOIE DE MAIL (reinitialisation de mot de passe)
+	
 	
 
 
-FONCTIONALITES POUR LA PAGE DACCUEIL 
+VERIFICATIONS DES BUGS OU AJOUT D'OUBLIS
+   Connexion : 
+	Un utilisateur non inscrit se connecte et donc erreur : lors de la premiere utilisation de l'app par l'utilisateur V
+
+   Inscription : 
+        L'option : déjà un compte ? V
+	Adapter le format des mots de passe utiliser par les navigateurs V
+	La date de naissance, il faut la rendre assez reglementaire X
+
+   Boites de texte :  
+	Implementer l'option "Enter" pour envoyer le contenu X
+   PhotoEleve plutôt que PhotoUtilisateur : Afficher la photo de l'eleve V 
+
+   Ajout de Tables : 
+	ProfileUtilisateur
+	ProfileEleve
+	Rendez-vous
+	Disponibilités 
+
+
+Gestion des Roles : ACCECIBILITE ET VISIBILITE DES PAGES AU NIVEAU DU NAVMENU EN FONCTION DES ROLES DE L'UTILISATEUR
+
+	Role : Utilisateur
+		Toutes les pages
+		
+	Role : Administrateur
+		Toutes sauf la page Mon Etablissement
+	Role : Proviseur
+		Toutes les pages sauf Mon Etablissement
+
+Gestion de l'affichage des pages en fonction de l'Etat d'authentification: 
+
+	Connected:
+		toutes les pages sauf la page Connexion et Inscription 
+
+	Not Connected:
+		Seulement les pages Connexion et Inscription
+ 
+Gestion des TRIGGERS :
+	-Triggers pour les notifications
+	
+
+FONCTIONALITES POUR LA PAGE DACCUEIL APPROFONDIES : 
+
+   Si l'utilisateur a le role UTILISATEUR:
 	 Petit formulaire pour permettre a l'utilisateur d'entrer son No PV 
-	
+	 La boite de texte doit recevoir des donnees avec un certains type de format 
+	 Redirection vers une page Mon Etablissement
+	 Des Parametres pour modifier le profile de l'utilisateur
 	 
 
+   Si l'utilisateur a le role ADMIN OU PROVISEUR :
+
+	 Envoyer une Notifications a tous ou a un seul eleve : l'administration pourra elle seule envoyer des messages et non l'eleve
+		Notifications : Confirmation de rendez-vous
+		Notifications : Preparation pour la rentre scolaire
+		Notifications : ........ et d'autres
+		Notifications : Renvoie
+		Changer de classe a l'eleve
+		Supprimer un elve de son etablissement
+
+	 Definir ou supprimer des creneaux horaires pour les rendez vous
+	 Absence du petit formulaire pour la redirection vers la page Mon Etatblissement 
+
+FONCTIONALITES APPROFONDIES DE LA PAGE Rendez-vous:(Gestion complete de cette fonctionnalité)
+	Eleve pourra prendre rendez vous 
+	Ou Annuler un rendez vous
+		 
+
+FONCTIONALITES APPROFONDIES DE LA PAGE Mon Etablissement 
+	Les informations de l'etablissement
+	Les informations de l'eleve(photo, Nom Prenom)
+	la date en temps reels
+	Les cours de l'eleve
+	La classe de l'eleve
+	Un lien faisant office de boite a messagerie de l'eleve
+	Des Parametres pour modifier le profile de l'eleve
 	
+	
+	 
+FONCTIONALITES APPROFONDIES DE LA PAGE Courriel:
+  Si Role == Utilisateur :
+	Juste Consulter ses messages
+	Supprimer ses messages
+
+  Si Role == Admin ou Proviseur:
+	Envoyer des messages : des alertes
+	Supprimer des alertes
+
+FONTIOANNALITES APPROFONDIES DE LA PAGE Rendez-vous 
+  Si Role == Utilisateur : 
+	Prendre rendez-vous
+	Supprimer rendez-vous
+
+  Si Role == Admin ou Proviseur : 
+	Créer creneaux horaire
+	Modifier un creneaux horaire
+        Supprimer un creneaux horaire
+	Accepter un rendez vous(Trigger)
+
+FONCTIONNALITES PAGE Cour : 
+	Afficher les informations du cours
+	Revoir les champs comme dureeSemaine, et dureeJour
+FONCTIONNALITES PAGE Horaire : 
+	Horaire de l'eleve
+FONCTIONNALITES PAGE Agenda : 
+	Agendat de l'eleve
+FONCTIONNALITES PAGE ParametresUtilisateur :
+	ChangerMDP
+	ChangerCourriel
+FONCTIONNALITES PAGE ParametreEleve : 
+	ChangerPP
 
 
 
 
-scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoUtilisateur, Notifications ,Utilisateur ,Message, Eleve,TentativesConnexion -Force
+scaffold-dbcontext -provider Microsoft.EntityFrameworkCore.SqlServer -connection 'Data Source=LAPTOP-EPSLT7GU\MSSQLSERVER01;Initial Catalog=BDEtab;User ID=Arthur;Password=prog3e3;MultipleActiveResultSets=True;TrustServerCertificate=True'-outputdir "Models" -ContextDir "Data" -DataAnnotations -tables Etablissement, Classe, Cour, PhotoEleve, Notifications ,Utilisateur ,Message, Eleve,TentativesConnexion,Disponibilite,RendezVous -Force
 
 
 

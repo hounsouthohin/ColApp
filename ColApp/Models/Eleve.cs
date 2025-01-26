@@ -9,6 +9,12 @@ namespace ColApp.Models
     [Table("Eleve")]
     public partial class Eleve
     {
+        public Eleve()
+        {
+            PhotoEleves = new HashSet<PhotoEleve>();
+            RendezVous = new HashSet<RendezVou>();
+        }
+
         [Key]
         [Column("idEleve")]
         public int IdEleve { get; set; }
@@ -35,5 +41,9 @@ namespace ColApp.Models
         [ForeignKey("IdEtablissement")]
         [InverseProperty("Eleves")]
         public virtual Etablissement IdEtablissementNavigation { get; set; } = null!;
+        [InverseProperty("IdEleveNavigation")]
+        public virtual ICollection<PhotoEleve> PhotoEleves { get; set; }
+        [InverseProperty("IdEleveNavigation")]
+        public virtual ICollection<RendezVou> RendezVous { get; set; }
     }
 }

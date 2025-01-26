@@ -8,7 +8,7 @@ namespace ColApp.Data
 {
     public partial class BDEtabContext : DbContext
     {
-        protected BDEtabContext()
+        protected BDEtabContext() 
         {
         }
 
@@ -19,15 +19,17 @@ namespace ColApp.Data
 
         public virtual DbSet<Classe> Classes { get; set; } = null!;
         public virtual DbSet<Cour> Cours { get; set; } = null!;
+        public virtual DbSet<Disponibilite> Disponibilites { get; set; } = null!;
         public virtual DbSet<Eleve> Eleves { get; set; } = null!;
         public virtual DbSet<Etablissement> Etablissements { get; set; } = null!;
         public virtual DbSet<Message> Messages { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
-        public virtual DbSet<PhotoUtilisateur> PhotoUtilisateurs { get; set; } = null!;
+        public virtual DbSet<PhotoEleve> PhotoEleves { get; set; } = null!;
+        public virtual DbSet<RendezVou> RendezVous { get; set; } = null!;
         public virtual DbSet<TentativesConnexion> TentativesConnexions { get; set; } = null!;
         public virtual DbSet<Utilisateur> Utilisateurs { get; set; } = null!;
 
-        
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,17 @@ namespace ColApp.Data
                     .WithMany(p => p.Cours)
                     .HasForeignKey(d => d.IdClasse)
                     .HasConstraintName("FK__Cour__idClasse__6442E2C9");
+            });
+
+            modelBuilder.Entity<Disponibilite>(entity =>
+            {
+                entity.Property(e => e.Statut).HasDefaultValueSql("('Disponible')");
+
+                entity.HasOne(d => d.IdUtilisateurNavigation)
+                    .WithMany(p => p.Disponibilites)
+                    .HasForeignKey(d => d.IdUtilisateur)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Disponibilite_Utilisateur");
             });
 
             modelBuilder.Entity<Eleve>(entity =>
@@ -104,16 +117,33 @@ namespace ColApp.Data
                     .HasName("PK__Notifica__430D4E1ACD5D51A9");
             });
 
-            modelBuilder.Entity<PhotoUtilisateur>(entity =>
+            modelBuilder.Entity<PhotoEleve>(entity =>
             {
                 entity.HasKey(e => e.NoPhoto)
-                    .HasName("PK__PhotoUti__746C0A8C4075D9BF");
+                    .HasName("PK__PhotoEle__746C0A8CAB16FC3D");
 
-                entity.HasOne(d => d.IdUtilisateurNavigation)
-                    .WithMany(p => p.PhotoUtilisateurs)
-                    .HasForeignKey(d => d.IdUtilisateur)
+                entity.HasOne(d => d.IdEleveNavigation)
+                    .WithMany(p => p.PhotoEleves)
+                    .HasForeignKey(d => d.IdEleve)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__PhotoUtil__idUti__6DCC4D03");
+                    .HasConstraintName("FK__PhotoElev__idEle__1E6F845E");
+            });
+
+            modelBuilder.Entity<RendezVou>(entity =>
+            {
+                entity.Property(e => e.Statut).HasDefaultValueSql("('Réservé')");
+
+                entity.HasOne(d => d.IdDisponibiliteNavigation)
+                    .WithMany(p => p.RendezVous)
+                    .HasForeignKey(d => d.IdDisponibilite)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RendezVous_Disponibilite");
+
+                entity.HasOne(d => d.IdEleveNavigation)
+                    .WithMany(p => p.RendezVous)
+                    .HasForeignKey(d => d.IdEleve)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_RendezVous_Eleve");
             });
 
             modelBuilder.Entity<Utilisateur>(entity =>
